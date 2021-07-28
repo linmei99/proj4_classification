@@ -1,0 +1,37 @@
+                           Classification Project Plan
+
+Design:
+Can the smart phone tell what I am doing?
+How accurate can we determine a user's activity based on the sensors readings on a smart phone or a smart watch? How long do we need before classification results can be accurately? 
+To answering these questions, Fordham University presented a raw data set containing sensor readings from smart phone and smart watches while user is performing 18 different activities over a 3-minute period for each activity. 
+
+The first task is to classify the activities into the three major categories, non-hand-oriented activity, hand-oriented activity (eating) and hand-oriented activity (general).
+The next question is to further classify the activities into each of the 18 different activities. 
+The last queston is to determine what is the minimum amount of data needed to perform the classification problem. 
+
+Data:
+The primary data are acquired from Kaggle smart phone activity dataset. It contains 3 million set of time series sensor measurements on smart phone and smart watches, taken 50 ms apart. 
+
+It is unlikely measurements at a single time instance are sufficient to perform the classification problem. So sensor data over a period of time, for example 10 seconds, are used as one data point to classify the activity involved, for the first and the second question. This result in 900 data points for each activity, for a total of 16,000 data points.
+
+For the third question, a smaller time period, for example 0.1 seconds, will be used to form each data point. The number of samples will increase, but each data point may not contain enough information to make a reasonable classification. 
+ 
+Algorithms:
+
+To transform the sensor readings in a 10 second period into one data point for an activity, certain data processing would be needed. The mean, min, max, standard deviation of the sensor values over this time period are used as the feature for this time period. 
+
+When the time period is shorten to 0.1 seconds, the same set of features will be generated per sample, and the number of samples will be increased as well. 
+
+Once the feaures are formed, seveal different classification models, like logistic regression, random forest, will be used to examine the model performance. 
+
+This is a balanced data set, with each of the 18 different activities taking around 5.5% of total outcome. So accuracy is a reasonable metic in this case.
+
+There is no obvious difference in terms of importance for the classificaiton outcome. In case of mis-classification, there is no penalty for mis-classified into a particular class versus into a different class.
+
+
+Tools:
+
+SQL Database will be used to store the basic data. The sensor readings are stored in a file per sensor. So the readings from different sensors at the same time perid will be collected from different files together, to form a sample that includes different sensor readings at the same time. 
+
+
+
