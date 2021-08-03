@@ -1,0 +1,37 @@
+                           Classification Project Plan
+
+Design:
+Can the smart phone tell what I am doing?
+How accurate can we determine a user's activity based on the sensors readings on a smart phone or a smart watch? How long do we need before classification results can be accurately? 
+To answering these questions, Fordham University presented a raw data set containing sensor readings from smart phone and smart watches while user is performing different activities,
+contains 3 million set of time series sensor measurements on smart phone and smart watches, taken 50 ms apart.
+
+Data:
+
+There are a total of 18 different activities in this dataset. It is a balanced data set, and each of the 18 activities have about 5.5% occurance rate. So the base line model has a 5.5% accuracy rate by randomly guessing. There are some missing data, as certain user's certain activity only has sensor readings from two or three of the four availavle sensors, while the other sensors have no readings in the data set at all. Such data cannot be used to make predictions and are removed from the data set.
+
+
+Each activity last a total of 3-minutes, and are performed by 51 different users. The activities within the 3-minute time period is considered repetitive, so data gathered within a non-overlapping  time window within the activity window can be considered as a seperate sample to determine the activity. 
+
+To ensure valid results, the test set and cross validation set are using data from different users. Out of 51 users, 10 users, or 20% are set apart as test set. Their sensor data from all activities do not exist in the training set. When performing cross validation, 20% users' data are seperated from other users for this purpose. 
+
+The first task is to classify the activities correctly, using several different models. ExtraTree, RandomForest and XGBoost are used, and all have about 70% accuracy rate, after tunning the hyper parameters. XGBoost takes much less time in achieving the results, while RandomForest takes the most amount of time, averaging 180 seconds during cross validation.
+
+Based on results, large classification erros occur between walking and kicking activity, while other classes have relatively smaller errors. The kicking activity is similar to walking, except a large motion to kick a ball for a brief time period. Given the user cannot kick a ball non-stop, the 5-second window set earlier may not containing any actual kicking activity, thus it may not be a misclassification, but a mis-labeled activity during a particular 5-second window. So longer time period for this activity will be used in the classificaiton task.
+
+The next question is to determine the minimum amount of data needed to perform some of the classification problem. The time period for data will be shortened and the classification results compared with earlier results, to determine when will the result have large changes.
+
+ 
+Algorithms:
+
+To transform the sensor readings in a 5 second period into one data point for an activity, certain data processing would be needed. The mean, min, max, standard deviation of the sensor values over this time period are used as the feature for this time period. The time domain data is also converted into frequency domain and the coefficients are added into features. There are improvements by adding frequency data, but the change is minor, and accuracy improves from 65% to 70%.
+
+There is no obvious difference in terms of importance for the different classes. In case of mis-classification, there is no penalty for mis-classified into a particular class versus into a different class. So accuracy is used as the metric to determine best model.
+
+
+Tools:
+
+SQL Database will be used to store the basic data. The sensor readings are stored in a file per sensor. So the readings from different sensors at the same time perid will be collected from different files together, to form a sample that includes different sensor readings at the same time. 
+
+
+
