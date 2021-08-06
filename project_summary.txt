@@ -1,0 +1,61 @@
+                           Classification Project Summary
+
+Abstract:
+Today's smart devices (smart phone/smart watch) are equipped with many advanced sensors. Can we use these sensors to identify the activities the user is performing? If no, what other features will improve identification? If yes, what are the minimum data to ensure identification?
+This project explores the conditions necessary to successfully calssify these activities using electronic sensor data. 
+
+Data:
+Fordham University presented a raw data set containing sensor readings from smart phone and smart watches while 51 different users are performing 18 different activities over a 3-minute period for each activity. The raw data is available at https://www.kaggle.com/sohelranaccselab/smartphone-smartwatch-activity-biometrics 
+
+It contains 3 million set of time series sensor measurements on smart phone and smart watches, taken 50 ms apart. The accelerometer and gyroscope readings of both the phone and watch are recorded, so there are 4 different sensors for all activities. 
+
+Each sensor reading has a timestamp associated with it. The timestamp for the two sensors in the same device, accelerometer and gyroscope, match with each other. But the timestamp in one device is vastly different from the timestamp from the other device, for the same user and activity recorded. 
+
+Only when each timestamp is aligned with the first reading of this particular user/activity combination, can the sensor readings from different devices be lined up. Thus, assuming the recording of the sensor data starts at the same time for both the smart phone and the smart watch, we can gather all four sensor readings to form a sample of the features to classify the user activities.  
+
+If the alignment is not perfect, the input to the classifier may not refer to the same underlying activities, and cause misclassification.
+
+A time window is used to gether the statistic of the sensor readings. This allow the imperfect alignment to still produce usable input to the classifier.
+Using a 5-second window, we can produce a total of 40,000 data points for this classification problem with 18 different classes.
+
+
+Algorithms:
+
+The accelerometer readings have a X, Y and Z component. As the readings are relative to the phone itself, a transformation from cartesian to spherical coordinates is performed. The transformed data is used as features as well.
+
+To transform the sensor readings in a 5-second time window into one data point for an activity, certain data processing would be needed. The mean, min, max, standard deviation of the sensor values over this time period are used as the feature for this time period. A Fourier Transform is also performed on the readings, and frequency domain coefficients are added as features for the feature. 
+
+This is a balanced data set, with each of the 18 different activities taking around 5.5% of total outcome. There is no obvious difference in terms of importance for the classificaiton outcome. So F1 is used as the metric. 
+
+After the feaures are developped, a ExtraTree classifier with 150 trees are used to perform the classification. It is faster than Random Forest, and has about the same F1 score. 
+
+Several different time window has been used. Ranging from 200 ms with only 4 sensor readings per window, to 5-second, 10-second windows. 
+
+Tools:
+
+SQL Database will be used to store the basic data. The sensor readings are stored in a file per sensor. So the readings from different sensors at the same time perid will be collected from different files together, to form a sample that includes different sensor readings at the same time. 
+
+Other models are also used, like XGB and RandomForest. The training time for these models are longer, and the final F1 score are close. Depends on the early termination condition, sometimes the training time of XGB model comes close to ExtraTree, sometimes it is longer. 
+
+The confusion matrix of the different models are close in identifying the different classes. 
+
+Conclusions:
+When the raw data is used without additional features, the F1 score is 0.38. The best performing class is jogging, with F1 score of 0.73. This activity is  
+the most physically intense, so it is easy to classify with even the minimum amount of data. The worst performing class is eating a sandwich, with 0.09 F1.
+
+In a 200 ms time window, the F1 of the model improves to .48, and F1 for jogging reaches 0.93. This indicates the additional statistics feature, like mean, max, std provides quite a bit of additional signal. 
+
+When time window is increased to 5 seconds, and the frequency domain data is added to the feature set, the F1 of the model reaches 0.78. The worst performing class is eating sandwich, with F1 of 0.26.
+
+Even longer time window like 10-seconds produces no noticeable change in model performance.
+
+Looking at the confusion matrix, the worst performing group are the eating activities. They blend to each other, and often are mis-classified into a different eating activity. 
+
+The gesture of eating is very similar to each other. So without having access to other information, identifying the food eaten has a much lower ceiling. It is also clear why eating sandwich is the worse performing activity. There is little hand and body movement after the sandwich is brought close to the mouth, while you have to brought new food after each bite for other activities. The mouth movement is not easily captured by the sensors in smart phone or smart watch.
+
+The other easily confused activity is going up stairs and walking. The main difference is the direction of the activity. One goes up and the other does not. The orientation of the phone can change, making it hard to identify real direction. 
+
+In conclusion, several limitations and challenges are identified which can signal if an activity is easy or hard to classify using smart device sensors. 
+
+
+   
