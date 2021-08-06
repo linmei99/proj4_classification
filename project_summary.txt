@@ -31,6 +31,8 @@ After the feaures are developped, a ExtraTree classifier with 150 trees are used
 
 Several different time window has been used. Ranging from 200 ms with only 4 sensor readings per window, to 5-second, 10-second windows. 
 
+To perform test and validation, the users are seperated into training set, validation set and test set. The entire sensor readings from said users are restricted to training set, validatoin set, or test set. This prevents data leakage. 
+
 Tools:
 
 SQL Database will be used to store the basic data. The sensor readings are stored in a file per sensor. So the readings from different sensors at the same time perid will be collected from different files together, to form a sample that includes different sensor readings at the same time. 
